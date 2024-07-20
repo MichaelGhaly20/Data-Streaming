@@ -38,12 +38,22 @@ public class Main {
 
         DataStreamSource<Weather> kafka = env.fromSource(source, WatermarkStrategy.noWatermarks(), "kafka");
 
+        /*
+        for min = 0-60
+        new york for first second was 10
+        new york for second second was 11
+        new york for third second was 12
+        etc...
+        so if my events are produced every second inside buffer i will get them and be aggregated and get average
+        if i get message in second 61 i will drop this message but to not lose accuracy i will get average messages in buffer
+         */
+
         System.out.println("Kafka source created");
 
         DataStream<Tuple2<MyAverage, Double>> averageTemperatureStream = kafka.keyBy(myEvent -> myEvent.city)
                 .window(TumblingProcessingTimeWindows.of(Time.seconds(60)))
                 .aggregate(new AverageAggregator());
-
+        // this will group average by city name
         DataStream<Tuple2<String, Double>> cityAndValueStream = averageTemperatureStream
                 .map(new MapFunction<Tuple2<MyAverage, Double>, Tuple2<String, Double>>() {
                     @Override
@@ -67,7 +77,7 @@ public class Main {
                         .withMaxRetries(5)
                         .build(),
                 new JdbcConnectionOptions.JdbcConnectionOptionsBuilder()
-                        .withUrl("jdbc:postgresql://docker.for.mac.host.internal:5438/postgres")
+                        .withUrl("jdbc:postgresql://postgres:5432/postgres") // Update this URL
                         .withDriverName("org.postgresql.Driver")
                         .withUsername("postgres")
                         .withPassword("postgres")
