@@ -15,12 +15,8 @@ This project demonstrates a real-time data streaming pipeline using Apache Kafka
 
 - [Architecture](#architecture)
 - [Components](#components)
-- [Setup and Running the Project](#setup-and-running-the-project)
 - [Data Flow](#data-flow)
 - [Configuration](#configuration)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Architecture
 
@@ -78,7 +74,7 @@ PostgreSQL:
   - Port: `5438`
   - Environment Variables: `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`
   
-####Flink Processor
+#### Flink Processor
 The Flink processor's main logic is in the Java code, which consumes data from Kafka, processes it, and writes to PostgreSQL. Key configurations include Kafka topic, windowing strategy, and JDBC connection options.
 
 
